@@ -1,14 +1,14 @@
-name: CI/CD
+name: CI
 
 on:
   push:
     branches: [ "master" ]
+  workflow_dispatch: {}
 
 env:
   IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}
 
 jobs:
-  # 1) Build & push on GitHub-hosted runner
   build-and-push:
     runs-on: ubuntu-latest
     outputs:
@@ -32,21 +32,3 @@ jobs:
           docker build -t "$IMAGE_NAME:sha-$SHORT_SHA" -t "$IMAGE_NAME:latest" .
           docker push "$IMAGE_NAME:sha-$SHORT_SHA"
           docker push "$IMAGE_NAME:latest"
-
-  # 2) Rollout on your self-hosted runner — deploy the SHA tag
-  rollout:
-    runs-on: [self-hosted, linux, X64]
-    needs: build-and-push
-    steps:
-      - name: Rollout immutable image to cluster
-        env:
-          IMAGE_NAME: ${{ env.IMAGE_NAME }}
-          SHORT_SHA: ${{ needs.build-and-push.outputs.short_sha }}
-        run: |
-          DEPLOYMENT_NAME=frontend-deployment
-          CONTAINER_NAME=frontend
-
-          kubectl set image deployment/$DEPLOYMENT_NAME \
-            $CONTAINER_NAME=$IMAGE_NAME:sha-$SHORT_SHA
-          kubectl rollout status deployment/$DEPLOYMENT_NAME --timeout=300s
-

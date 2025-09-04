@@ -1,0 +1,35 @@
+name: CD
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+
+env:
+  IMAGE_REPO: ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}
+
+jobs:
+  deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'master' }}
+    concurrency:
+      group: deploy-${{ github.ref }}
+      cancel-in-progress: true
+    runs-on: [self-hosted, linux, X64]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Apply manifests
+        run: kubectl apply -R -f k8s/
+
+      - name: Pin image to SHA and rollout
+        env:
+          SHORT_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          # <<< SET THESE FOR THIS REPO >>>
+          DEPLOYMENT_NAME=<deployment-name>   # e.g., backend-deployment-userdata
+          CONTAINER_NAME=<container-name>     # e.g., userdata
+
+          SHORT=${SHORT_SHA:0:7}
+          kubectl set image deployment/$DEPLOYMENT_NAME \
+            $CONTAINER_NAME=$IMAGE_REPO:sha-$SHORT
+          kubectl rollout status deployment/$DEPLOYMENT_NAME --timeout=300s
