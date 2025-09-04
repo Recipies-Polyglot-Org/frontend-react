@@ -9,7 +9,7 @@ env:
 
 jobs:
   build-and-push:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, X64]
     steps:
       - uses: actions/checkout@v4
 
@@ -34,4 +34,5 @@ jobs:
 
           kubectl set image deployment/$DEPLOYMENT_NAME $CONTAINER_NAME=$IMAGE_NAME:latest
           kubectl rollout status deployment/$DEPLOYMENT_NAME --timeout=180s
+
 
