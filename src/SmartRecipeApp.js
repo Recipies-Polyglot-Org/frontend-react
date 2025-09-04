@@ -47,7 +47,7 @@ export default function SmartRecipeApp() {
 
   try {
     // Step 1: Get suggestion
-    const query = encodeURIComponent(`I have: ${validIngredients.join(', ')}. Suggest a recipe.`);
+    const query = encodeURIComponent(`I have these ingredients: ${validIngredients.join(', ')}. Suggest an nice indian recipe.`);
     const res = await fetch(`${API_BASE}/claude/ask?q=${query}`, {
       headers: { 'Accept': 'text/plain' } // Tell API to return plain text
     });
