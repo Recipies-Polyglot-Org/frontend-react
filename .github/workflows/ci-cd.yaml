@@ -43,10 +43,10 @@ jobs:
           IMAGE_NAME: ${{ env.IMAGE_NAME }}
           SHORT_SHA: ${{ needs.build-and-push.outputs.short_sha }}
         run: |
-          # <<< CHANGE THESE PER REPO >>>
           DEPLOYMENT_NAME=frontend-deployment
           CONTAINER_NAME=frontend
 
           kubectl set image deployment/$DEPLOYMENT_NAME \
             $CONTAINER_NAME=$IMAGE_NAME:sha-$SHORT_SHA
           kubectl rollout status deployment/$DEPLOYMENT_NAME --timeout=300s
+
