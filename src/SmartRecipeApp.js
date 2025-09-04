@@ -84,7 +84,7 @@ export default function SmartRecipeApp() {
 
   return (
     <div className="container">
-      <h1>Smart Recipe</h1>
+      <h1>Smart Recipes</h1>
       <div className="ingredients">
         {ingredients.map((ing, i) => (
           <div key={i} className="ingredient-row">
