@@ -25,3 +25,13 @@ jobs:
           docker build -t $IMAGE_NAME:sha-$SHORT_SHA -t $IMAGE_NAME:latest .
           docker push $IMAGE_NAME:sha-$SHORT_SHA
           docker push $IMAGE_NAME:latest
+
+      - name: Rollout (update deployment to :latest)
+        run: |
+          # CHANGE these two for each repo:
+          DEPLOYMENT_NAME=frontend-deployment    # e.g., api-gate, userdata, suggest, frontend
+          CONTAINER_NAME=frontend   # must match .spec.template.spec.containers[0].name
+
+          kubectl set image deployment/$DEPLOYMENT_NAME $CONTAINER_NAME=$IMAGE_NAME:latest
+          kubectl rollout status deployment/$DEPLOYMENT_NAME --timeout=180s
+
