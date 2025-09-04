@@ -26,10 +26,11 @@ jobs:
           SHORT_SHA: ${{ github.event.workflow_run.head_sha }}
         run: |
           # <<< SET THESE FOR THIS REPO >>>
-          DEPLOYMENT_NAME=<deployment-name>   # e.g., backend-deployment-userdata
-          CONTAINER_NAME=<container-name>     # e.g., userdata
+          DEPLOYMENT_NAME=frontend-deployment  # e.g., backend-deployment-userdata
+          CONTAINER_NAME=frontend    # e.g., userdata
 
           SHORT=${SHORT_SHA:0:7}
           kubectl set image deployment/$DEPLOYMENT_NAME \
             $CONTAINER_NAME=$IMAGE_REPO:sha-$SHORT
           kubectl rollout status deployment/$DEPLOYMENT_NAME --timeout=300s
+
