@@ -18,6 +18,8 @@ spec:
       - name: frontend
         image: akshat1414/frontend-react:latest
         imagePullPolicy: Always
+        securityContext:
+          allowPrivilegeEscalation: false
         ports:
         - containerPort: 80
         resources:
