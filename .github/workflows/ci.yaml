@@ -9,7 +9,7 @@ env:
   IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}
 
 jobs:
-  build-and-push:
+  CI:
     runs-on: ubuntu-latest
     outputs:
       short_sha: ${{ steps.get_sha.outputs.short_sha }}
@@ -120,3 +120,4 @@ jobs:
           path: |
             audit.json
             semgrep-results.sarif || true
+
