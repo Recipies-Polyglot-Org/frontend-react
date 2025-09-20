@@ -34,3 +34,30 @@ jobs:
             $CONTAINER_NAME=$IMAGE_REPO:sha-$SHORT
           kubectl rollout status deployment/$DEPLOYMENT_NAME --timeout=300s
 
+
+  # dast-scan:
+  #   runs-on: self-hosted
+  #   needs: deploy
+  #   permissions:
+  #     issues: write
+  #     contents: read
+  #   steps:
+  #   - name: Checkout repository
+  #     uses: actions/checkout@v4
+
+  #   - name: Docker login
+  #     run: |
+  #       echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+  #   - name: Pre-pull ZAP Docker image
+  #     run: docker pull ghcr.io/zaproxy/zaproxy:stable
+
+  #   - name: Run OWASP ZAP Full Scan
+  #     uses: zaproxy/action-full-scan@v0.5.0
+  #     continue-on-error: true
+  #     with:
+  #       target: ${{ secrets.TARGET_URL }}
+  #       docker_name: 'ghcr.io/zaproxy/zaproxy:stable'
+  #       artifact_name: zap-scan-report 
+
+
